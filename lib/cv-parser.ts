@@ -254,7 +254,7 @@ export class CVParser {
       }
     }
     
-    return [...new Set(skills)] // Remove duplicates
+    return Array.from(new Set(skills)) // Remove duplicates
   }
 
   // Infer skills by scanning the entire text for known tokens and synonyms
