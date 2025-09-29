@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+export const runtime = 'nodejs'
 import { supabaseAdmin } from '@/lib/supabase'
 import { CVParser } from '@/lib/cv-parser'
 

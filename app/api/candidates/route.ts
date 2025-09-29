@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+export const runtime = 'nodejs'
 import { supabase } from '@/lib/supabase'
 import { expandWithSynonyms, normalizeToken } from '@/lib/normalize'
 
