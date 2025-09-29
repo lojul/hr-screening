@@ -132,6 +132,7 @@ export async function PUT(request: NextRequest) {
       )
     }
 
+    const supabase = getSupabase()
     const { data, error } = await supabase
       .from('candidates')
       .update(updates)
@@ -169,6 +170,7 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
+    const supabase = getSupabase()
     const { error } = await supabase
       .from('candidates')
       .delete()
