@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 export const runtime = 'nodejs'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getSupabaseAdmin } from '@/lib/supabase'
 import { CVParser } from '@/lib/cv-parser'
 
 export async function POST(request: NextRequest) {
@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create candidate record first
+    const supabaseAdmin = getSupabaseAdmin()
     const { data: candidate, error: candidateError } = await supabaseAdmin
       .from('candidates')
       .insert({

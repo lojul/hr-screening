@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 export const runtime = 'nodejs'
-import { supabase } from '@/lib/supabase'
+import { getSupabase } from '@/lib/supabase'
 import { expandWithSynonyms, normalizeToken } from '@/lib/normalize'
 
 export async function GET(request: NextRequest) {
@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search')
     const skills = searchParams.get('skills')
 
+    const supabase = getSupabase()
     let query = supabase
       .from('candidates')
       .select(`

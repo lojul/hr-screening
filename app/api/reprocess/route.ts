@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 export const runtime = 'nodejs'
-import { supabaseAdmin } from '@/lib/supabase'
+import { getSupabaseAdmin } from '@/lib/supabase'
 import { CVParser } from '@/lib/cv-parser'
 
 export async function POST(request: NextRequest) {
@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
     const candidateId: string | undefined = body?.candidateId
 
     // Fetch cv_files (optionally for one candidate)
+    const supabaseAdmin = getSupabaseAdmin()
     let cvQuery = supabaseAdmin.from('cv_files').select('*')
     if (candidateId) cvQuery = cvQuery.eq('candidate_id', candidateId)
 
