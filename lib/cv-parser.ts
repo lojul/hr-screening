@@ -286,9 +286,9 @@ export class CVParser {
 
     // Threshold: at least 2 occurrences or appears once alongside related vendor terms
     const inferred: string[] = []
-    for (const [token, count] of discovered.entries()) {
+    discovered.forEach((count, token) => {
       if (count >= 2) inferred.push(token)
-    }
+    })
 
     return inferred
   }
