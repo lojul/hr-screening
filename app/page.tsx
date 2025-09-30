@@ -40,10 +40,14 @@ export default function Home() {
       if (searchTerm) params.append('search', searchTerm)
       if (skillFilter) params.append('skills', skillFilter)
 
+      console.log('Fetching candidates with params:', params.toString())
       const response = await fetch(`/api/candidates?${params}`)
       const data = await response.json()
+      console.log('Candidates API response:', data)
+      
       // Ensure match_score is available on items (API provides it when skills param is present)
       const list = (data.candidates || [])
+      console.log('Setting candidates list:', list.length, 'candidates')
       // If match scores exist, keep API order (already sorted by score); otherwise, default order
       setCandidates(list)
     } catch (error) {

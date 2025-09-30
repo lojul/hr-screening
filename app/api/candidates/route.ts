@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 export const runtime = 'nodejs'
-import { getSupabase } from '@/lib/supabase'
+import { getSupabaseAdmin } from '@/lib/supabase'
 import { expandWithSynonyms, normalizeToken } from '@/lib/normalize'
 
 export async function GET(request: NextRequest) {
@@ -10,7 +10,8 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search')
     const skills = searchParams.get('skills')
 
-    const supabase = getSupabase()
+    console.log('Candidates API called with params:', { status, search, skills })
+    const supabase = getSupabaseAdmin()
     let query = supabase
       .from('candidates')
       .select(`
@@ -111,6 +112,7 @@ export async function GET(request: NextRequest) {
         })
     }
 
+    console.log('Returning candidates:', filteredCandidates.length, 'candidates')
     return NextResponse.json({ candidates: filteredCandidates })
 
   } catch (error) {
