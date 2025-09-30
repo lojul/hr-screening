@@ -51,16 +51,21 @@ export default function Home() {
         body: formData,
       })
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       const result = await response.json()
       if (result.success) {
-        fetchCandidates()
+        // Refresh the candidate list
+        await fetchCandidates()
         alert('CV uploaded and processed successfully!')
       } else {
         alert(`Error: ${result.error}`)
       }
     } catch (error) {
       console.error('Upload error:', error)
-      alert('Failed to upload CV')
+      alert(`Failed to upload CV: ${error instanceof Error ? error.message : 'Unknown error'}`)
     } finally {
       setUploading(false)
     }

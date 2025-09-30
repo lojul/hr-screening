@@ -86,7 +86,7 @@ export default function CompactFileUpload({ onFileSelect, uploading }: CompactFi
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
+        onClick={() => !uploading && fileInputRef.current?.click()}
       >
         <input
           ref={fileInputRef}
@@ -97,7 +97,9 @@ export default function CompactFileUpload({ onFileSelect, uploading }: CompactFi
           disabled={uploading}
         />
 
-        {selectedFile ? (
+        {uploading ? (
+          <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin" />
+        ) : selectedFile ? (
           <FileText className="w-4 h-4 text-green-600" />
         ) : (
           <Upload className="w-4 h-4" />

@@ -118,6 +118,7 @@ export async function POST(request: NextRequest) {
           education: parsedData.education || null,
           experience: parsedData.experience || null,
           skills: parsedData.skills || null,
+          soft_skills: parsedData.soft_skills || null,
           languages: parsedData.languages || null,
           certifications: parsedData.certifications || null,
           summary: parsedData.summary || null

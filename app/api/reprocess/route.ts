@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
               education: parsed.education || null,
               experience: parsed.experience || null,
               skills: parsed.skills || null,
+              soft_skills: parsed.soft_skills || null,
               languages: parsed.languages || null,
               certifications: parsed.certifications || null,
               summary: parsed.summary || null
@@ -73,6 +74,7 @@ export async function POST(request: NextRequest) {
               education: parsed.education || null,
               experience: parsed.experience || null,
               skills: parsed.skills || null,
+              soft_skills: parsed.soft_skills || null,
               languages: parsed.languages || null,
               certifications: parsed.certifications || null,
               summary: parsed.summary || null
