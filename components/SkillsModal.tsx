@@ -20,6 +20,8 @@ export default function SkillsModal({
   badgeColor, 
   textColor 
 }: SkillsModalProps) {
+  console.log('SkillsModal render:', { isOpen, skills, title, badgeColor, textColor })
+  
   if (!isOpen) return null
 
   return (

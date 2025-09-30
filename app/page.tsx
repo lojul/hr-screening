@@ -134,6 +134,7 @@ export default function Home() {
   }
 
   const openSkillsModal = (skills: string[], title: string, badgeColor: string, textColor: string) => {
+    console.log('Opening skills modal:', { skills, title, badgeColor, textColor })
     setSkillsModal({
       isOpen: true,
       skills,
@@ -352,12 +353,15 @@ export default function Home() {
                           ))}
                           {candidate.candidate_details?.[0]?.skills?.length > 3 && (
                             <button
-                              onClick={() => openSkillsModal(
-                                candidate.candidate_details[0].skills,
-                                'Technical Skills',
-                                'bg-blue-100',
-                                'text-blue-800'
-                              )}
+                              onClick={() => {
+                                console.log('Button clicked, skills:', candidate.candidate_details[0].skills)
+                                openSkillsModal(
+                                  candidate.candidate_details[0].skills,
+                                  'Technical Skills',
+                                  'bg-blue-100',
+                                  'text-blue-800'
+                                )
+                              }}
                               className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer"
                             >
                               +{candidate.candidate_details[0].skills.length - 3} more
@@ -380,12 +384,15 @@ export default function Home() {
                           ))}
                           {candidate.candidate_details?.[0]?.soft_skills?.length > 3 && (
                             <button
-                              onClick={() => openSkillsModal(
-                                candidate.candidate_details[0].soft_skills,
-                                'Soft Skills',
-                                'bg-purple-100',
-                                'text-purple-800'
-                              )}
+                              onClick={() => {
+                                console.log('Soft skills button clicked, skills:', candidate.candidate_details[0].soft_skills)
+                                openSkillsModal(
+                                  candidate.candidate_details[0].soft_skills,
+                                  'Soft Skills',
+                                  'bg-purple-100',
+                                  'text-purple-800'
+                                )
+                              }}
                               className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer"
                             >
                               +{candidate.candidate_details[0].soft_skills.length - 3} more
