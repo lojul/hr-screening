@@ -54,27 +54,37 @@ export default function Home() {
   }
 
   const handleFileUpload = async (file: File) => {
+    console.log('Starting file upload:', file.name)
     setUploading(true)
     const formData = new FormData()
     formData.append('file', file)
     formData.append('candidateName', file.name.split('.')[0])
 
     try {
+      console.log('Sending upload request...')
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       })
 
+      console.log('Upload response status:', response.status)
+      
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        const errorText = await response.text()
+        console.error('Upload failed:', errorText)
+        throw new Error(`HTTP error! status: ${response.status} - ${errorText}`)
       }
 
       const result = await response.json()
+      console.log('Upload result:', result)
+      
       if (result.success) {
+        console.log('Upload successful, refreshing candidates...')
         // Refresh the candidate list
         await fetchCandidates()
         alert('CV uploaded and processed successfully!')
       } else {
+        console.error('Upload failed:', result.error)
         alert(`Error: ${result.error}`)
       }
     } catch (error) {

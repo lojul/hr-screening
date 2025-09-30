@@ -4,12 +4,21 @@ import { getSupabaseAdmin } from '@/lib/supabase'
 import { CVParser } from '@/lib/cv-parser'
 
 export async function POST(request: NextRequest) {
+  console.log('Upload API called')
   try {
     const formData = await request.formData()
     const file = formData.get('file') as File
     const candidateName = formData.get('candidateName') as string
 
+    console.log('File received:', { 
+      name: file?.name, 
+      size: file?.size, 
+      type: file?.type,
+      candidateName 
+    })
+
     if (!file) {
+      console.log('No file provided')
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
     }
 
@@ -37,6 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create candidate record first
+    console.log('Creating candidate record...')
     const supabaseAdmin = getSupabaseAdmin()
     const { data: candidate, error: candidateError } = await supabaseAdmin
       .from('candidates')
@@ -48,13 +58,17 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (candidateError) {
+      console.error('Candidate creation error:', candidateError)
       return NextResponse.json(
         { error: 'Failed to create candidate record' },
         { status: 500 }
       )
     }
 
+    console.log('Candidate created:', candidate.id)
+
     // Upload file to Supabase Storage
+    console.log('Uploading file to storage...')
     const fileExt = file.name.split('.').pop()
     const fileName = `${candidate.id}.${fileExt}`
     const filePath = `cv-files/${fileName}`
@@ -64,6 +78,7 @@ export async function POST(request: NextRequest) {
       .upload(filePath, file)
 
     if (uploadError) {
+      console.error('File upload error:', uploadError)
       // Clean up candidate record if file upload fails
       await supabaseAdmin.from('candidates').delete().eq('id', candidate.id)
       return NextResponse.json(
@@ -71,6 +86,8 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
+
+    console.log('File uploaded successfully')
 
     // Create CV file record
     const { data: cvFile, error: cvFileError } = await supabaseAdmin
@@ -94,8 +111,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Parse CV in the background
+    console.log('Starting CV parsing...')
     try {
       const parsedData = await CVParser.parseFile(file)
+      console.log('CV parsed successfully:', { 
+        skills: parsedData.skills?.length || 0,
+        soft_skills: parsedData.soft_skills?.length || 0,
+        hasName: !!parsedData.name,
+        hasEmail: !!parsedData.email
+      })
       
       // Update candidate with parsed data
       const updates: any = {}
@@ -143,6 +167,7 @@ export async function POST(request: NextRequest) {
         .eq('id', cvFile.id)
     }
 
+    console.log('Upload completed successfully')
     return NextResponse.json({
       success: true,
       candidateId: candidate.id,
