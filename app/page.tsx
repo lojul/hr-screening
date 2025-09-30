@@ -362,7 +362,8 @@ export default function Home() {
                                   'text-blue-800'
                                 )
                               }}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer"
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer select-none"
+                              style={{ pointerEvents: 'auto' }}
                             >
                               +{candidate.candidate_details[0].skills.length - 3} more
                             </button>
@@ -393,7 +394,8 @@ export default function Home() {
                                   'text-purple-800'
                                 )
                               }}
-                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer"
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer select-none"
+                              style={{ pointerEvents: 'auto' }}
                             >
                               +{candidate.candidate_details[0].soft_skills.length - 3} more
                             </button>
