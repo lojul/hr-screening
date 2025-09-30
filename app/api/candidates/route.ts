@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
         candidate_details (
           id,
           skills,
+          soft_skills,
           summary,
           experience,
           education

@@ -25,6 +25,7 @@ export interface ParsedCVData {
   skills?: string[]
   languages?: string[]
   certifications?: string[]
+  soft_skills?: string[]
 }
 
 export class CVParser {
@@ -89,6 +90,7 @@ export class CVParser {
       experience: this.extractExperience(lines),
       skills: this.extractSkills(lines),
       languages: this.extractLanguages(lines),
+      soft_skills: this.extractSoftSkills(lines),
       certifications: this.extractCertifications(lines)
     }
 
@@ -346,5 +348,22 @@ export class CVParser {
     }
     
     return [...new Set(certifications)]
+  }
+
+  private static extractSoftSkills(lines: string[]): string[] {
+    const softSkillKeywords = [
+      'communication','leadership','teamwork','collaboration','problem-solving','critical thinking',
+      'adaptability','flexibility','time management','organization','ownership','initiative',
+      'stakeholder management','mentoring','coaching','conflict resolution','customer focus',
+      'attention to detail','creativity','decision making','presentation','negotiation'
+    ]
+    const found = new Set<string>()
+    for (const line of lines) {
+      const lower = line.toLowerCase()
+      for (const k of softSkillKeywords) {
+        if (lower.includes(k)) found.add(k)
+      }
+    }
+    return Array.from(found)
   }
 }

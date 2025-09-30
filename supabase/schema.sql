@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS candidate_details (
   education JSONB,
   experience JSONB,
   skills TEXT[],
+  soft_skills TEXT[],
   languages TEXT[],
   certifications TEXT[],
   summary TEXT
@@ -70,3 +71,6 @@ ALTER TABLE candidate_details ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow all operations on candidates" ON candidates FOR ALL USING (true);
 CREATE POLICY "Allow all operations on cv_files" ON cv_files FOR ALL USING (true);
 CREATE POLICY "Allow all operations on candidate_details" ON candidate_details FOR ALL USING (true);
+
+-- Migration helper for existing databases
+ALTER TABLE candidate_details ADD COLUMN IF NOT EXISTS soft_skills TEXT[];

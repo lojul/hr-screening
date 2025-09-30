@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Users, FileText, CheckCircle, XCircle, Clock } from 'lucide-react'
 import { Candidate } from '@/lib/database.types'
 import FileUpload from '@/components/FileUpload'
+import CompactFileUpload from '@/components/CompactFileUpload'
 
 export default function Home() {
   const [candidates, setCandidates] = useState<Candidate[]>([])
@@ -360,14 +361,11 @@ export default function Home() {
           )}
         </div>
 
-        {/* Floating Upload Section - Bottom Center */}
+        {/* Floating Upload Section - Mobile Optimized */}
         {candidates.length > 0 && (
-          <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50">
-            <div className="bg-white rounded-lg shadow-lg border p-4 max-w-md">
-              <div className="text-center">
-                <h4 className="text-sm font-medium text-gray-900 mb-2">Upload Another CV</h4>
-                <FileUpload onFileSelect={handleFileUpload} uploading={uploading} />
-              </div>
+          <div className="fixed bottom-4 right-4 z-50">
+            <div className="bg-white rounded-full shadow-lg border p-2 group hover:shadow-xl transition-all duration-200">
+              <CompactFileUpload onFileSelect={handleFileUpload} uploading={uploading} />
             </div>
           </div>
         )}

@@ -79,6 +79,7 @@ export interface Database {
           education: any | null
           experience: any | null
           skills: string[] | null
+          soft_skills: string[] | null
           languages: string[] | null
           certifications: string[] | null
           summary: string | null
@@ -90,6 +91,7 @@ export interface Database {
           education?: any | null
           experience?: any | null
           skills?: string[] | null
+          soft_skills?: string[] | null
           languages?: string[] | null
           certifications?: string[] | null
           summary?: string | null
@@ -101,6 +103,7 @@ export interface Database {
           education?: any | null
           experience?: any | null
           skills?: string[] | null
+          soft_skills?: string[] | null
           languages?: string[] | null
           certifications?: string[] | null
           summary?: string | null
