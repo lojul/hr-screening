@@ -57,10 +57,11 @@ export async function GET(request: NextRequest) {
       if (hasDetails) return c
 
       // Fallback: synthesize details from latest cv_files.parsed_data
-      const files = Array.isArray(c.cv_files) ? c.cv_files : []
+      type CvFileEntry = { created_at: string; parsed_data?: any }
+      const files: CvFileEntry[] = Array.isArray(c.cv_files) ? (c.cv_files as CvFileEntry[]) : []
       const latest = files
-        .filter(f => !!f)
-        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
+        .filter((f: CvFileEntry) => Boolean(f))
+        .sort((a: CvFileEntry, b: CvFileEntry) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
       const parsed = latest?.parsed_data || null
       if (!parsed) return c
 
