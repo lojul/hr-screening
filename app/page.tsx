@@ -256,6 +256,9 @@ export default function Home() {
                       Skills
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      Soft Skills
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       CV Files
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -320,6 +323,26 @@ export default function Home() {
                           )}
                           {(!candidate.candidate_details?.[0]?.skills || candidate.candidate_details[0].skills.length === 0) && (
                             <span className="text-xs text-gray-400">No skills detected</span>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex flex-wrap gap-1">
+                          {candidate.candidate_details?.[0]?.soft_skills?.slice(0, 3).map((skill: string, index: number) => (
+                            <span
+                              key={index}
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                          {candidate.candidate_details?.[0]?.soft_skills?.length > 3 && (
+                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                              +{candidate.candidate_details[0].soft_skills.length - 3} more
+                            </span>
+                          )}
+                          {(!candidate.candidate_details?.[0]?.soft_skills || candidate.candidate_details[0].soft_skills.length === 0) && (
+                            <span className="text-xs text-gray-400">No soft skills detected</span>
                           )}
                         </div>
                       </td>
