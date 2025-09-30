@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Users, FileText, CheckCircle, XCircle, Clock } from 'lucide-react'
+import { Users, FileText, CheckCircle, XCircle, Clock, Download } from 'lucide-react'
 import { Candidate } from '@/lib/database.types'
 import FileUpload from '@/components/FileUpload'
 import CompactFileUpload from '@/components/CompactFileUpload'
@@ -35,6 +35,7 @@ export default function Home() {
 
   const fetchCandidates = async () => {
     try {
+      setLoading(true)
       const params = new URLSearchParams()
       if (statusFilter !== 'all') params.append('status', statusFilter)
       if (searchTerm) params.append('search', searchTerm)
@@ -86,6 +87,10 @@ export default function Home() {
         console.log('Upload successful, refreshing candidates...')
         // Refresh the candidate list
         await fetchCandidates()
+        // Extra refresh shortly after to account for any eventual consistency
+        setTimeout(() => {
+          fetchCandidates()
+        }, 800)
         alert('CV uploaded and processed successfully!')
       } else {
         console.error('Upload failed:', result.error)
@@ -307,9 +312,7 @@ export default function Home() {
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Soft Skills
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      CV Files
-                    </th>
+                    <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider w-12"></th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Actions
                     </th>
@@ -419,8 +422,32 @@ export default function Home() {
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {candidate.cv_files?.length || 0} file(s)
+                      <td className="px-6 py-4 whitespace-nowrap text-center">
+                        <button
+                          onClick={async () => {
+                            try {
+                              const res = await fetch('/api/cv-download', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ candidateId: candidate.id })
+                              })
+                              const data = await res.json()
+                              if (!res.ok) throw new Error(data.error || 'Download failed')
+                              const a = document.createElement('a')
+                              a.href = data.url
+                              a.download = data.filename || 'cv'
+                              document.body.appendChild(a)
+                              a.click()
+                              a.remove()
+                            } catch (e) {
+                              alert('No CV available for download')
+                            }
+                          }}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="Download latest CV"
+                        >
+                          <Download className="w-5 h-5" />
+                        </button>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-3">
                         <button

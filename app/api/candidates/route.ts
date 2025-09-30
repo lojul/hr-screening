@@ -16,21 +16,8 @@ export async function GET(request: NextRequest) {
       .from('candidates')
       .select(`
         *,
-        cv_files (
-          id,
-          filename,
-          file_type,
-          upload_status,
-          created_at
-        ),
-        candidate_details (
-          id,
-          skills,
-          soft_skills,
-          summary,
-          experience,
-          education
-        )
+        cv_files (*),
+        candidate_details (*)
       `)
       .order('created_at', { ascending: false })
 
@@ -42,16 +29,55 @@ export async function GET(request: NextRequest) {
       query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%`)
     }
 
-    const { data, error } = await query
+    let { data, error } = await query
 
     if (error) {
-      return NextResponse.json(
-        { error: 'Failed to fetch candidates' },
-        { status: 500 }
-      )
+      console.error('Candidates query error (with relations):', error)
+      // Fallback: fetch base candidates without relations so UI can still show rows
+      const supabase = getSupabaseAdmin()
+      const fallback = await supabase
+        .from('candidates')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (fallback.error) {
+        console.error('Candidates fallback query error:', fallback.error)
+        return NextResponse.json(
+          { error: 'Failed to fetch candidates' },
+          { status: 500 }
+        )
+      }
+      data = fallback.data
     }
 
-    let filteredCandidates = data || []
+    // Ensure candidate_details exists using parsed_data fallback when missing
+    let filteredCandidates = (data || []).map((c: any) => {
+      const detailsArr = Array.isArray(c.candidate_details) ? c.candidate_details : []
+      const hasDetails = detailsArr.length > 0
+      if (hasDetails) return c
+
+      // Fallback: synthesize details from latest cv_files.parsed_data
+      const files = Array.isArray(c.cv_files) ? c.cv_files : []
+      const latest = files
+        .filter(f => !!f)
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())[0]
+      const parsed = latest?.parsed_data || null
+      if (!parsed) return c
+
+      const synthesized = {
+        id: 'synthetic',
+        candidate_id: c.id,
+        education: parsed.education ?? null,
+        experience: parsed.experience ?? null,
+        skills: parsed.skills ?? null,
+        soft_skills: parsed.soft_skills ?? null,
+        languages: parsed.languages ?? null,
+        certifications: parsed.certifications ?? null,
+        summary: parsed.summary ?? null,
+        created_at: c.created_at
+      }
+      return { ...c, candidate_details: [synthesized] }
+    })
 
     // Compute match score across skills, summary, experience, education when `skills` filter is provided
     if (skills && skills.trim()) {
@@ -135,7 +161,7 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    const supabase = getSupabase()
+    const supabase = getSupabaseAdmin()
     const { data, error } = await supabase
       .from('candidates')
       .update(updates)
@@ -173,7 +199,7 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    const supabase = getSupabase()
+    const supabase = getSupabaseAdmin()
     const { error } = await supabase
       .from('candidates')
       .delete()
