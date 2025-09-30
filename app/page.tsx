@@ -5,6 +5,7 @@ import { Users, FileText, CheckCircle, XCircle, Clock } from 'lucide-react'
 import { Candidate } from '@/lib/database.types'
 import FileUpload from '@/components/FileUpload'
 import CompactFileUpload from '@/components/CompactFileUpload'
+import SkillsModal from '@/components/SkillsModal'
 
 export default function Home() {
   const [candidates, setCandidates] = useState<Candidate[]>([])
@@ -14,6 +15,19 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [skillFilter, setSkillFilter] = useState('')
   const [reprocessing, setReprocessing] = useState(false)
+  const [skillsModal, setSkillsModal] = useState<{
+    isOpen: boolean
+    skills: string[]
+    title: string
+    badgeColor: string
+    textColor: string
+  }>({
+    isOpen: false,
+    skills: [],
+    title: '',
+    badgeColor: '',
+    textColor: ''
+  })
 
   useEffect(() => {
     fetchCandidates()
@@ -117,6 +131,26 @@ export default function Home() {
     } finally {
       setReprocessing(false)
     }
+  }
+
+  const openSkillsModal = (skills: string[], title: string, badgeColor: string, textColor: string) => {
+    setSkillsModal({
+      isOpen: true,
+      skills,
+      title,
+      badgeColor,
+      textColor
+    })
+  }
+
+  const closeSkillsModal = () => {
+    setSkillsModal({
+      isOpen: false,
+      skills: [],
+      title: '',
+      badgeColor: '',
+      textColor: ''
+    })
   }
 
   const getStatusColor = (status: string) => {
@@ -317,9 +351,17 @@ export default function Home() {
                             </span>
                           ))}
                           {candidate.candidate_details?.[0]?.skills?.length > 3 && (
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                            <button
+                              onClick={() => openSkillsModal(
+                                candidate.candidate_details[0].skills,
+                                'Technical Skills',
+                                'bg-blue-100',
+                                'text-blue-800'
+                              )}
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer"
+                            >
                               +{candidate.candidate_details[0].skills.length - 3} more
-                            </span>
+                            </button>
                           )}
                           {(!candidate.candidate_details?.[0]?.skills || candidate.candidate_details[0].skills.length === 0) && (
                             <span className="text-xs text-gray-400">No skills detected</span>
@@ -337,9 +379,17 @@ export default function Home() {
                             </span>
                           ))}
                           {candidate.candidate_details?.[0]?.soft_skills?.length > 3 && (
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                            <button
+                              onClick={() => openSkillsModal(
+                                candidate.candidate_details[0].soft_skills,
+                                'Soft Skills',
+                                'bg-purple-100',
+                                'text-purple-800'
+                              )}
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors cursor-pointer"
+                            >
                               +{candidate.candidate_details[0].soft_skills.length - 3} more
-                            </span>
+                            </button>
                           )}
                           {(!candidate.candidate_details?.[0]?.soft_skills || candidate.candidate_details[0].soft_skills.length === 0) && (
                             <span className="text-xs text-gray-400">No soft skills detected</span>
@@ -397,6 +447,16 @@ export default function Home() {
             </div>
           </div>
         )}
+
+        {/* Skills Modal */}
+        <SkillsModal
+          isOpen={skillsModal.isOpen}
+          onClose={closeSkillsModal}
+          skills={skillsModal.skills}
+          title={skillsModal.title}
+          badgeColor={skillsModal.badgeColor}
+          textColor={skillsModal.textColor}
+        />
       </main>
     </div>
   )
